@@ -12,11 +12,11 @@ type Position = {
 
 type State = {
   adjusted: {
-    position: { horizontal: number; vertical: number };
+    position: Position;
     aim: number;
   };
   regular: {
-    position: { horizontal: number; vertical: number };
+    position: Position;
   };
 };
 
