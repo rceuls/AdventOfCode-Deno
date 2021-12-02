@@ -1,0 +1,6 @@
+scripts:
+  test:
+    cmd: deno test --watch
+    watch: true
+    allow: 
+      - read
