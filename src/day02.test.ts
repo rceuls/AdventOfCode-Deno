@@ -10,7 +10,9 @@ const TEST_INPUT = [
   "down 8",
   "forward 2",
 ];
-const ACTUAL_INPUT_PATH = "./resources/day02.input.txt";
+
+const ACTUAL_INPUT_PATH = "day02.input.txt";
+const FILE_INPUT = getLines(ACTUAL_INPUT_PATH);
 
 Deno.test("2021 > day 2 > part 1 + 2 > example", () => {
   const result = calculate(TEST_INPUT);
@@ -19,10 +21,9 @@ Deno.test("2021 > day 2 > part 1 + 2 > example", () => {
   assertEquals(result.adjusted, 900);
 });
 
-Deno.test("2021 > day 2 > part 1 + 2 > actual", async () => {
-  const data = await getLines(ACTUAL_INPUT_PATH);
-  const result = calculate(data);
+Deno.test("2021 > day 2 > part 1 + 2 > actual", () => {
+  const result = calculate(FILE_INPUT);
 
-  assertEquals(result.regular, 1480518);
-  assertEquals(result.adjusted, 1282809906);
+  assertEquals(result.regular, 1_480_518);
+  assertEquals(result.adjusted, 1_282_809_906);
 });
