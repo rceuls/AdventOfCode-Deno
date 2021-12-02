@@ -16,30 +16,29 @@ type State = {
 };
 
 const doMove = (state: State, move: string) => {
-  const newState = state;
   switch (move[0]) {
     case "d": {
       const amount = +move.slice(5);
-      newState.regular.vertical += amount;
-      newState.adjusted.aim += amount;
+      state.regular.vertical += amount;
+      state.adjusted.aim += amount;
       break;
     }
     case "u":
       {
         const amount = +move.slice(3);
-        newState.regular.vertical -= amount;
-        newState.adjusted.aim -= amount;
+        state.regular.vertical -= amount;
+        state.adjusted.aim -= amount;
       }
       break;
     case "f": {
       const amount = +move.slice(7);
-      newState.regular.horizontal += amount;
-      newState.adjusted.horizontal += amount;
-      newState.adjusted.vertical += amount * newState.adjusted.aim;
+      state.regular.horizontal += amount;
+      state.adjusted.horizontal += amount;
+      state.adjusted.vertical += amount * state.adjusted.aim;
       break;
     }
   }
-  return newState;
+  return state;
 };
 
 const calc = (inbound: Position): number =>
