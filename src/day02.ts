@@ -1,8 +1,3 @@
-type Position = {
-  horizontal: number;
-  vertical: number;
-};
-
 type State = {
   vertical: number;
   verticalAdjusted: number;
