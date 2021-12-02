@@ -1,10 +1,3 @@
-type Direction = "up" | "forward" | "down";
-
-type MoveRecord = {
-  direction: Direction;
-  amount: number;
-};
-
 type Position = {
   horizontal: number;
   vertical: number;
@@ -20,15 +13,9 @@ type State = {
   };
 };
 
-const parsePosition = (input: string) => {
-  const splitted = input.split(" ");
-  return { direction: splitted[0] as Direction, amount: +splitted[1] };
-};
-
-const parsePositions = (input: string[]) => input.map(parsePosition);
-
-const doMove = (state: State, mv: MoveRecord) => {
+const doMove = (state: State, move: string) => {
   const newState = { ...state };
+  const mv = { direction: move.split(" ")[0], amount: +move.split(" ")[1] };
   switch (mv.direction) {
     case "down":
       newState.regular.position.vertical += mv.amount;
@@ -51,7 +38,7 @@ const calc = (inbound: Position): number =>
   inbound.horizontal * inbound.vertical;
 
 const calculate = (input: string[]) => {
-  const initialState: State = {
+  const finalPosition = input.reduce<State>(doMove, {
     adjusted: {
       position: { horizontal: 0, vertical: 0 },
       aim: 0,
@@ -59,12 +46,7 @@ const calculate = (input: string[]) => {
     regular: {
       position: { horizontal: 0, vertical: 0 },
     },
-  };
-
-  const finalPosition = parsePositions(input).reduce<State>(
-    doMove,
-    initialState,
-  );
+  });
 
   return {
     regular: calc(finalPosition.regular.position),
