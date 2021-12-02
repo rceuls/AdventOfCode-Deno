@@ -63,7 +63,7 @@ const calculate = (input: string[]) => {
 
   const finalPosition = parsePositions(input).reduce<State>(
     doMove,
-    initialState
+    initialState,
   );
 
   return {

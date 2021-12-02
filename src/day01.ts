@@ -4,7 +4,7 @@ const calculate = (data: number[]) =>
 const addRelevantItems = (input: number[]) => {
   return input
     .map((_, index, arr) => arr[index] + arr[index + 1] + arr[index + 2])
-    .filter((_, i, arr) => i < arr.length - 2);
+    .filter((x) => !isNaN(x));
 };
 
 const calculatePartTwo = (input: number[]) =>
