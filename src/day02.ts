@@ -5,51 +5,72 @@ type MoveRecord = {
   amount: number;
 };
 
-const parsePositions: (input: string[]) => MoveRecord[] = (input) =>
-  input.map((x) => {
-    const splitted = x.split(" ");
-    return { direction: splitted[0] as Direction, amount: +splitted[1] };
-  });
+type Position = {
+  horizontal: number;
+  vertical: number;
+};
+
+type State = {
+  adjusted: {
+    position: { horizontal: number; vertical: number };
+    aim: number;
+  };
+  regular: {
+    position: { horizontal: number; vertical: number };
+  };
+};
+
+const parsePosition = (input: string) => {
+  const splitted = input.split(" ");
+  return { direction: splitted[0] as Direction, amount: +splitted[1] };
+};
+
+const parsePositions = (input: string[]) => input.map(parsePosition);
+
+const doMove = (state: State, mv: MoveRecord) => {
+  const newState = { ...state };
+  switch (mv.direction) {
+    case "down":
+      newState.regular.position.vertical += mv.amount;
+      newState.adjusted.aim += mv.amount;
+      break;
+    case "up":
+      newState.regular.position.vertical -= mv.amount;
+      newState.adjusted.aim -= mv.amount;
+      break;
+    case "forward":
+      newState.regular.position.horizontal += mv.amount;
+      newState.adjusted.position.horizontal += mv.amount;
+      newState.adjusted.position.vertical += mv.amount * newState.adjusted.aim;
+      break;
+  }
+  return newState;
+};
+
+const calc = (inbound: Position): number =>
+  inbound.horizontal * inbound.vertical;
 
 const calculate: (input: string[]) => { regular: number; adjusted: number } = (
   input
 ) => {
-  const position = {
+  const initialState: State = {
     adjusted: {
-      horizontal: 0,
-      vertical: 0,
+      position: { horizontal: 0, vertical: 0 },
       aim: 0,
     },
     regular: {
-      horizontal: 0,
-      vertical: 0,
+      position: { horizontal: 0, vertical: 0 },
     },
   };
 
-  for (const mv of parsePositions(input)) {
-    switch (mv.direction) {
-      case "down":
-        position.regular.vertical += mv.amount;
-        position.adjusted.aim += mv.amount;
-        break;
-      case "up":
-        position.regular.vertical -= mv.amount;
-        position.adjusted.aim -= mv.amount;
-        break;
-      case "forward":
-        position.regular.horizontal += mv.amount;
-        position.adjusted.horizontal += mv.amount;
-        position.adjusted.vertical += mv.amount * position.adjusted.aim;
-        break;
-    }
-  }
-
-  const calc = (inbound: { horizontal: number; vertical: number }): number =>
-    inbound.horizontal * inbound.vertical;
+  const finalPosition = parsePositions(input).reduce<State>(
+    (state, move) => doMove(state, move),
+    initialState
+  );
 
   return {
-    regular: calc(position.regular),
-    adjusted: calc(position.adjusted),
+    regular: calc(finalPosition.regular.position),
+    adjusted: calc(finalPosition.adjusted.position),
   };
 };
 export { calculate };
