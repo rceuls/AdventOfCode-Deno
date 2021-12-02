@@ -1,6 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.116.0/testing/asserts.ts";
 import { calculate } from "./day02.ts";
-import { getLines } from "./shared/fileUtil.ts";
+import { getLines } from "./shared/file-util.ts";
 
 const TEST_INPUT = [
   "forward 5",
