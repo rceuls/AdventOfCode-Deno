@@ -50,9 +50,7 @@ const doMove = (state: State, mv: MoveRecord) => {
 const calc = (inbound: Position): number =>
   inbound.horizontal * inbound.vertical;
 
-const calculate: (input: string[]) => { regular: number; adjusted: number } = (
-  input
-) => {
+const calculate = (input: string[]) => {
   const initialState: State = {
     adjusted: {
       position: { horizontal: 0, vertical: 0 },
@@ -73,4 +71,5 @@ const calculate: (input: string[]) => { regular: number; adjusted: number } = (
     adjusted: calc(finalPosition.adjusted.position),
   };
 };
+
 export { calculate };

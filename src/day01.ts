@@ -1,4 +1,4 @@
-const calculate: (input: number[]) => number = (data) =>
+const calculate = (data: number[]) =>
   data.filter((_, i, arr) => i > 0 && arr[i - 1] < arr[i]).length;
 
 const addRelevantItems = (input: number[]) => {
