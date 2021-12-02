@@ -16,7 +16,7 @@ type State = {
 };
 
 const doMove = (state: State, move: string) => {
-  const newState = { ...state };
+  const newState = state;
   switch (move[0]) {
     case "d": {
       const amount = +move.slice(5);
