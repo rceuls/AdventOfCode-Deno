@@ -5,11 +5,13 @@ type Position = {
 
 type State = {
   adjusted: {
-    position: Position;
+    horizontal: number;
+    vertical: number;
     aim: number;
   };
   regular: {
-    position: Position;
+    horizontal: number;
+    vertical: number;
   };
 };
 
@@ -18,22 +20,22 @@ const doMove = (state: State, move: string) => {
   switch (move[0]) {
     case "d": {
       const amount = +move.slice(5);
-      newState.regular.position.vertical += amount;
+      newState.regular.vertical += amount;
       newState.adjusted.aim += amount;
       break;
     }
     case "u":
       {
         const amount = +move.slice(3);
-        newState.regular.position.vertical -= amount;
+        newState.regular.vertical -= amount;
         newState.adjusted.aim -= amount;
       }
       break;
     case "f": {
       const amount = +move.slice(7);
-      newState.regular.position.horizontal += amount;
-      newState.adjusted.position.horizontal += amount;
-      newState.adjusted.position.vertical += amount * newState.adjusted.aim;
+      newState.regular.horizontal += amount;
+      newState.adjusted.horizontal += amount;
+      newState.adjusted.vertical += amount * newState.adjusted.aim;
       break;
     }
   }
@@ -46,17 +48,19 @@ const calc = (inbound: Position): number =>
 const calculate = (input: string[]) => {
   const finalPosition = input.reduce(doMove, {
     adjusted: {
-      position: { horizontal: 0, vertical: 0 },
+      horizontal: 0,
+      vertical: 0,
       aim: 0,
     },
     regular: {
-      position: { horizontal: 0, vertical: 0 },
+      horizontal: 0,
+      vertical: 0,
     },
   });
 
   return {
-    regular: calc(finalPosition.regular.position),
-    adjusted: calc(finalPosition.adjusted.position),
+    regular: calc(finalPosition.regular),
+    adjusted: calc(finalPosition.adjusted),
   };
 };
 
