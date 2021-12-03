@@ -1,6 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.116.0/testing/asserts.ts";
 import { calculatePartOne, calculatePartTwo } from "./day01.ts";
-import { getLinesAsNumbers } from "./shared/file-util.ts";
+import { getLinesAsNumbers } from "../shared/file-util.ts";
 
 const TEST_INPUT = [
   "199",
