@@ -1,3 +1,6 @@
+const countOnes = (input: string[], column: number) =>
+  input.filter((x) => x[column] === "1").length;
+
 const calculatePartOne = (input: string[]) => {
   const width = input[0].length;
   const length = input.length;
@@ -6,15 +9,10 @@ const calculatePartOne = (input: string[]) => {
   const epsilon = [];
 
   for (let i = 0; i < width; i++) {
-    const oneCount = input.filter((x) => x[i] === "1").length;
+    const oneCount = countOnes(input, i);
     const zeroCount = length - oneCount;
-    if (oneCount > zeroCount) {
-      gamma.push("1");
-      epsilon.push("0");
-    } else {
-      gamma.push("0");
-      epsilon.push("1");
-    }
+    gamma.push(oneCount > zeroCount ? "1" : "0");
+    epsilon.push(oneCount > zeroCount ? "0" : "1");
   }
   return (
     Number.parseInt(gamma.join(""), 2) * Number.parseInt(epsilon.join(""), 2)
@@ -36,7 +34,7 @@ const getToKeep = (
 };
 
 const filterOut = (input: string[], column: number, keepTheLesser: boolean) => {
-  const oneCount = input.filter((x) => x[column] === "1").length;
+  const oneCount = countOnes(input, column);
   const zeroCount = input.length - oneCount;
   const toKeep = getToKeep(zeroCount, oneCount, keepTheLesser);
   return input.filter((x) => x[column] === toKeep);
