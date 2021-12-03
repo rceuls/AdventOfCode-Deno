@@ -13,13 +13,12 @@ const doMove = (state: State, move: string) => {
       state.aim += amount;
       break;
     }
-    case "u":
-      {
-        const amount = +move.slice(3);
-        state.vertical -= amount;
-        state.aim -= amount;
-      }
+    case "u": {
+      const amount = +move.slice(3);
+      state.vertical -= amount;
+      state.aim -= amount;
       break;
+    }
     case "f": {
       const amount = +move.slice(7);
       state.horizontal += amount;
