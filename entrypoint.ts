@@ -3,28 +3,19 @@ import * as Day02 from "./src/2021/day02.ts";
 import * as Day03 from "./src/2021/day03.ts";
 import { getLines, getLinesAsNumbers } from "./src/shared/file-util.ts";
 
+const part01 = getLinesAsNumbers("day01.input.txt", 2021);
+const part02 = getLines("day02.input.txt", 2021);
+const part03 = getLines("day03.input.txt", 2021);
 console.log("start");
 
-console.log(
-  `Se01e01p01 - ${Day01.calculatePartOne(
-    getLinesAsNumbers("day01.input.txt", 2021)
-  )}`
-);
-console.log(
-  `Se01e01p02 - ${Day01.calculatePartTwo(
-    getLinesAsNumbers("day01.input.txt", 2021)
-  )}`
-);
+console.log(`Day 01 > Part 01 > ${Day01.calculatePartOne(part01)}`);
+console.log(`Day 01 > Part 02 > ${Day01.calculatePartTwo(part01)}`);
 
 console.log(
-  `Se01e02 - ${JSON.stringify(
-    Day02.calculate(getLines("day02.input.txt", 2021))
-  )}`
+  `Day 02 > Part 01 + 02 > ${JSON.stringify(Day02.calculate(part02))}`
 );
 
-console.log(
-  `Se01e03p01 - ${Day03.calculateTwo(getLines("day03.input.txt", 2021))}`
-);
-console.log(
-  `Se01e03p02 - ${Day03.calculate(getLines("day03.input.txt", 2021))}`
-);
+console.log(`Day 03 > Part 01 > ${Day03.calculate(part03)}`);
+console.log(`Day 03 > Part 02 > ${Day03.calculateTwo(part03)}`);
+
+console.log("end");
