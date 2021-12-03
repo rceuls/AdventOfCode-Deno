@@ -27,11 +27,11 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: Verify formatting
-        run: deno fmt --check
-
       - name: Run tests
-        run: deno test -A --unstable --coverage=cov_profile && deno coverage cov_profile --lcov > cov_profile.lcov
+        run: deno test -A --unstable --coverage=cov_profile
+
+      - name: Convert coverage
+        run: deno coverage cov_profile --lcov > cov_profile.lcov
 
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v1
