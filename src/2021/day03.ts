@@ -12,7 +12,9 @@ const calculatePartOne = (input: string[]) => {
     const oneCount = countOnes(input, i);
     const zeroCount = length - oneCount;
     gamma.push(oneCount > zeroCount ? "1" : "0");
-    epsilon.push(oneCount > zeroCount ? "0" : "1");
+  }
+  for (let i = 0; i < width; i++) {
+    epsilon.push(gamma[i] === "1" ? "0" : "1");
   }
   return (
     Number.parseInt(gamma.join(""), 2) * Number.parseInt(epsilon.join(""), 2)
