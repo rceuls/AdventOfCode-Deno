@@ -16,7 +16,7 @@ const TEST_INPUT = [
 ].map((x) => +x);
 
 const ACTUAL_INPUT_PATH = "day01.input.txt";
-const FILE_INPUT = getLinesAsNumbers(ACTUAL_INPUT_PATH);
+const FILE_INPUT = getLinesAsNumbers(ACTUAL_INPUT_PATH, 2021);
 
 Deno.test("2021 > day 1 > part 1 > example", () => {
   assertEquals(calculatePartOne(TEST_INPUT), 7);

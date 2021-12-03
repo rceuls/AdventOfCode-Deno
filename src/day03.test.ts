@@ -18,7 +18,7 @@ const TEST_INPUT = [
 ];
 
 const ACTUAL_INPUT_PATH = "day03.input.txt";
-const FILE_INPUT = getLines(ACTUAL_INPUT_PATH);
+const FILE_INPUT = getLines(ACTUAL_INPUT_PATH, 2021);
 
 Deno.test("2021 > day 3 > part 1 > example", () => {
   const result = calculate(TEST_INPUT);
