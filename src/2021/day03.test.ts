@@ -17,9 +17,6 @@ const TEST_INPUT = [
   "01010",
 ];
 
-const ACTUAL_INPUT_PATH = "day03.input.txt";
-const FILE_INPUT = getLines(ACTUAL_INPUT_PATH, 2021);
-
 Deno.test("2021 > day 3 > part 1 > example", () => {
   const result = calculateDay03Part01(TEST_INPUT);
 
@@ -27,7 +24,9 @@ Deno.test("2021 > day 3 > part 1 > example", () => {
 });
 
 Deno.test("2021 > day 3 > part 1 > actual", () => {
-  const result = calculateDay03Part01(FILE_INPUT);
+  const input = getLines("day03.input.txt", 2021);
+
+  const result = calculateDay03Part01(input);
 
   assertEquals(result, 4006064);
 });
@@ -39,7 +38,9 @@ Deno.test("2021 > day 3 > part 2 > example", () => {
 });
 
 Deno.test("2021 > day 3 > part 2 > actual", () => {
-  const result = calculateDay03Part02(FILE_INPUT);
+  const input = getLines("day03.input.txt", 2021);
+
+  const result = calculateDay03Part02(input);
 
   assertEquals(result, 5941884);
 });

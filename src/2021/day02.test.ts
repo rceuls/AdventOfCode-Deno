@@ -11,19 +11,25 @@ const TEST_INPUT = [
   "forward 2",
 ];
 
-const ACTUAL_INPUT_PATH = "day02.input.txt";
-const FILE_INPUT = getLines(ACTUAL_INPUT_PATH, 2021);
+Deno.test({
+  name: "2021 > day 2 > part 1 + 2 > example",
+  fn() {
+    const result = calculateDay02(TEST_INPUT);
 
-Deno.test("2021 > day 2 > part 1 + 2 > example", () => {
-  const result = calculateDay02(TEST_INPUT);
-
-  assertEquals(result.regular, 150);
-  assertEquals(result.adjusted, 900);
+    assertEquals(result.regular, 150);
+    assertEquals(result.adjusted, 900);
+  },
+  ...TEST_INPUT,
 });
 
-Deno.test("2021 > day 2 > part 1 + 2 > actual", () => {
-  const result = calculateDay02(FILE_INPUT);
+Deno.test({
+  name: "2021 > day 2 > part 1 + 2 > actual",
+  fn() {
+    const input = getLines("day02.input.txt", 2021);
+    const result = calculateDay02(input);
 
-  assertEquals(result.regular, 1_480_518);
-  assertEquals(result.adjusted, 1_282_809_906);
+    assertEquals(result.regular, 1_480_518);
+    assertEquals(result.adjusted, 1_282_809_906);
+  },
+  ...TEST_INPUT,
 });
