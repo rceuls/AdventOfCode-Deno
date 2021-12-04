@@ -16,14 +16,14 @@ const part04 = getText("day04.input.txt", 2021);
 
 console.log("start");
 
-console.log(`Day 01 > Part 01 > ${Day01.calculatePartOne(part01)}`);
-console.log(`Day 01 > Part 02 > ${Day01.calculatePartTwo(part01)}`);
+console.log(`Day 01 > Part 01 > ${Day01.calculateDay01Part01(part01)}`);
+console.log(`Day 01 > Part 02 > ${Day01.calculateDay01Part02(part01)}`);
 
-console.log(`Day 02 > Part 01 + 02 > ${Day02.calculate(part02)}`);
+console.log(`Day 02 > Part 01 + 02 > ${Day02.calculateDay02(part02)}`);
 
-console.log(`Day 03 > Part 01 > ${Day03.calculate(part03)}`);
-console.log(`Day 03 > Part 02 > ${Day03.calculateTwo(part03)}`);
+console.log(`Day 03 > Part 01 > ${Day03.calculateDay03Part01(part03)}`);
+console.log(`Day 03 > Part 02 > ${Day03.calculateDay03Part02(part03)}`);
 
-console.log(`Day 04 > Part 01 + 02 > ${Day04.calculate(part04)}`);
+console.log(`Day 04 > Part 01 + 02 > ${Day04.calculateDay04(part04)}`);
 
 console.log("end");

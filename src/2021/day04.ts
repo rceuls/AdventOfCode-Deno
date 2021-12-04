@@ -99,4 +99,4 @@ const calculate = (input: string) => {
   };
 };
 
-export { calculate };
+export { calculate as calculateDay04 };

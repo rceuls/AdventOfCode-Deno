@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.116.0/testing/asserts.ts";
-import { calculate, calculateTwo } from "./day03.ts";
+import { calculateDay03Part01, calculateDay03Part02 } from "./day03.ts";
 import { getLines } from "../shared/file-util.ts";
 
 const TEST_INPUT = [
@@ -21,25 +21,25 @@ const ACTUAL_INPUT_PATH = "day03.input.txt";
 const FILE_INPUT = getLines(ACTUAL_INPUT_PATH, 2021);
 
 Deno.test("2021 > day 3 > part 1 > example", () => {
-  const result = calculate(TEST_INPUT);
+  const result = calculateDay03Part01(TEST_INPUT);
 
   assertEquals(result, 198);
 });
 
 Deno.test("2021 > day 3 > part 1 > actual", () => {
-  const result = calculate(FILE_INPUT);
+  const result = calculateDay03Part01(FILE_INPUT);
 
   assertEquals(result, 4006064);
 });
 
 Deno.test("2021 > day 3 > part 2 > example", () => {
-  const result = calculateTwo(TEST_INPUT);
+  const result = calculateDay03Part02(TEST_INPUT);
 
   assertEquals(result, 230);
 });
 
 Deno.test("2021 > day 3 > part 2 > actual", () => {
-  const result = calculateTwo(FILE_INPUT);
+  const result = calculateDay03Part02(FILE_INPUT);
 
   assertEquals(result, 5941884);
 });

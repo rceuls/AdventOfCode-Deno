@@ -66,4 +66,7 @@ const calculatePartTwo = (input: string[]) => {
   return Number.parseInt(filtered[0], 2) * Number.parseInt(filteredMany[0], 2);
 };
 
-export { calculatePartOne as calculate, calculatePartTwo as calculateTwo };
+export {
+  calculatePartOne as calculateDay03Part01,
+  calculatePartTwo as calculateDay03Part02,
+};

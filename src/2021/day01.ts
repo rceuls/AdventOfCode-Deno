@@ -10,4 +10,7 @@ const addRelevantItems = (input: number[]) => {
 const calculatePartTwo = (input: number[]) =>
   calculate(addRelevantItems(input));
 
-export { calculate as calculatePartOne, calculatePartTwo };
+export {
+  calculate as calculateDay01Part01,
+  calculatePartTwo as calculateDay01Part02,
+};
