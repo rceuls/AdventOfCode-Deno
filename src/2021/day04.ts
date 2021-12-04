@@ -39,35 +39,32 @@ const getBoardsAndInput: (input: string) => {
 const winCalculator = (called: number, board: Board) => {
   let shouldCheck = false;
   let unmarked = 0;
+
   for (let j = 0; j < BOARD_SIZE; j++) {
     for (let i = 0; i < BOARD_SIZE; i++) {
-      if (board.items[j][i].val === called) {
-        board.items[j][i].hit = true;
+      const item = board.items[j][i];
+      if (item.val === called) {
+        item.hit = true;
         shouldCheck = true;
+      } else if (!item.hit) {
+        unmarked += item.val;
       }
     }
-    if (shouldCheck) {
-      for (let k = 0; k < BOARD_SIZE; k++) {
-        let xHit = 0;
-        let yHit = 0;
-        for (let i = 0; i < BOARD_SIZE; i++) {
-          xHit += board.items[i][k].hit ? 1 : 0;
-          yHit += board.items[k][i].hit ? 1 : 0;
-        }
-        const isWin = xHit === BOARD_SIZE || yHit === BOARD_SIZE;
-        if (isWin) {
-          let unmarked = 0;
-          for (let i = 0; i < BOARD_SIZE; i++) {
-            for (let j = 0; j < BOARD_SIZE; j++) {
-              const val = board.items[i][j];
-              unmarked += val.hit ? 0 : val.val;
-            }
-          }
-          return {
-            called,
-            unmarked,
-          };
-        }
+  }
+
+  if (shouldCheck) {
+    for (let k = 0; k < BOARD_SIZE; k++) {
+      let xHit = 0;
+      let yHit = 0;
+      for (let i = 0; i < BOARD_SIZE; i++) {
+        xHit += board.items[i][k].hit ? 1 : 0;
+        yHit += board.items[k][i].hit ? 1 : 0;
+      }
+      if (xHit === BOARD_SIZE || yHit === BOARD_SIZE) {
+        return {
+          called,
+          unmarked,
+        };
       }
     }
   }
