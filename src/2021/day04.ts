@@ -2,7 +2,7 @@ const BOARD_SIZE = 5;
 
 type Board = {
   index: number;
-  items: { val: number; hit: boolean; x: number; y: number }[];
+  items: { val: number; hit: boolean }[][];
 };
 
 type Result = {
@@ -17,14 +17,13 @@ const getBoardsAndInput: (input: string) => {
   const splitted = input.split("\n\n");
   const getBoard = (raw: string, index: number) => {
     const board: Board = { items: [], index };
-    const lines = raw.replace(" ", " ").split("\n");
+    const lines = raw.split("\n");
     for (let i = 0; i < BOARD_SIZE; i++) {
+      board.items[i] = [];
       for (let j = 0; j < BOARD_SIZE; j++) {
-        board.items.push({
+        board.items[i].push({
           hit: false,
-          val: +lines[i].slice(0 + 3 * j, 3 + 3 * j).trim(),
-          x: i,
-          y: j,
+          val: +lines[i].slice(0 + 3 * j, 3 + 3 * j),
         });
       }
     }
@@ -37,24 +36,36 @@ const getBoardsAndInput: (input: string) => {
   };
 };
 
-const winCalculator = (target: number, board: Board) => {
+const winCalculator = (called: number, board: Board) => {
   let shouldCheck = false;
-  for (let j = 0; j < board.items.length; j++) {
-    if (board.items[j].val === target) {
-      board.items[j].hit = true;
-      shouldCheck = true;
+  let unmarked = 0;
+  for (let j = 0; j < BOARD_SIZE; j++) {
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      if (board.items[j][i].val === called) {
+        board.items[j][i].hit = true;
+        shouldCheck = true;
+      }
     }
     if (shouldCheck) {
       for (let k = 0; k < BOARD_SIZE; k++) {
-        const isWin =
-          board.items.filter((x) => x.x === k && x.hit).length === BOARD_SIZE ||
-          board.items.filter((x) => x.y === k && x.hit).length === BOARD_SIZE;
+        let xHit = 0;
+        let yHit = 0;
+        for (let i = 0; i < BOARD_SIZE; i++) {
+          xHit += board.items[i][k].hit ? 1 : 0;
+          yHit += board.items[k][i].hit ? 1 : 0;
+        }
+        const isWin = xHit === BOARD_SIZE || yHit === BOARD_SIZE;
         if (isWin) {
+          let unmarked = 0;
+          for (let i = 0; i < BOARD_SIZE; i++) {
+            for (let j = 0; j < BOARD_SIZE; j++) {
+              const val = board.items[i][j];
+              unmarked += val.hit ? 0 : val.val;
+            }
+          }
           return {
-            called: target,
-            unmarked: board.items
-              .filter((x) => !x.hit)
-              .reduce((p, n) => p + n.val, 0),
+            called,
+            unmarked,
           };
         }
       }
