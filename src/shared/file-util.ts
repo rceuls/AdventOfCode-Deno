@@ -10,3 +10,6 @@ export const getLines = (filePath: string, year: number) =>
 
 export const getLinesAsNumbers = (filePath: string, year: number) =>
   getLines(filePath, year).map((x) => +x);
+
+export const getText = (filePath: string, year: number) =>
+  Deno.readTextFileSync(getFullPath(filePath, year));
