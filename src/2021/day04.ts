@@ -79,8 +79,7 @@ const getAllWinningBoards = (data: { input: number[]; boards: Board[] }) => {
 
     for (let m = 0; m < data.boards.length; m++) {
       if (!winningIndexes.has(m)) {
-        const board = data.boards[m];
-        const result = winCalculator(target, board);
+        const result = winCalculator(target, data.boards[m]);
         if (result) {
           winningBoards.push(result);
           winningIndexes.add(m);
