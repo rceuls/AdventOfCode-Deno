@@ -1,13 +1,13 @@
 const BOARD_SIZE = 5;
 
 type Board = {
+  index: number;
   items: { val: number; hit: boolean; x: number; y: number }[];
 };
 
 type Result = {
   called: number;
   unmarked: number;
-  ix?: number;
 };
 
 const getBoardsAndInput: (input: string) => {
@@ -15,8 +15,8 @@ const getBoardsAndInput: (input: string) => {
   boards: Board[];
 } = (input) => {
   const splitted = input.split("\n\n");
-  const getBoard = (raw: string) => {
-    const board: Board = { items: [] };
+  const getBoard = (raw: string, index: number) => {
+    const board: Board = { items: [], index };
     const lines = raw.replace(" ", " ").split("\n");
     for (let i = 0; i < BOARD_SIZE; i++) {
       for (let j = 0; j < BOARD_SIZE; j++) {
@@ -63,21 +63,7 @@ const winCalculator = (target: number, board: Board) => {
   return undefined;
 };
 
-const playGame = (data: { input: number[]; boards: Board[] }) => {
-  for (let i = 0; i < data.input.length; i++) {
-    const target = data.input[i];
-
-    for (let m = 0; m < data.boards.length; m++) {
-      const calculateWin = winCalculator(target, data.boards[m]);
-      if (calculateWin) {
-        return calculateWin;
-      }
-    }
-  }
-  return undefined;
-};
-
-const playGamePartTwo = (data: { input: number[]; boards: Board[] }) => {
+const getAllWinningBoards = (data: { input: number[]; boards: Board[] }) => {
   const winningBoards: Result[] = [];
   const winningIndexes: Set<number> = new Set();
   for (let i = 0; i < data.input.length; i++) {
@@ -88,31 +74,22 @@ const playGamePartTwo = (data: { input: number[]; boards: Board[] }) => {
         const board = data.boards[m];
         const result = winCalculator(target, board);
         if (result) {
-          winningBoards.push({ ...result, ix: m + 1 });
+          winningBoards.push(result);
           winningIndexes.add(m);
         }
       }
     }
   }
-  return winningBoards ? winningBoards[winningBoards.length - 1] : undefined;
+  return winningBoards;
 };
 
 const calculate = (input: string) => {
   const data = getBoardsAndInput(input);
-  const result = playGame(data);
-  if (result === undefined) {
-    throw new Error("Shouldn't be here");
-  }
-  return result.unmarked * result.called;
+  const result = getAllWinningBoards(data);
+  return {
+    first: result[0].unmarked * result[0].called,
+    last: result[result.length - 1].unmarked * result[result.length - 1].called,
+  };
 };
 
-const calculateTwo = (input: string) => {
-  const data = getBoardsAndInput(input);
-  const result = playGamePartTwo(data);
-  if (result === undefined) {
-    throw new Error("Shouldn't be here");
-  }
-  return result.unmarked * result.called;
-};
-
-export { calculate, calculateTwo };
+export { calculate };

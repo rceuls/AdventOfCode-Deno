@@ -19,14 +19,11 @@ console.log("start");
 console.log(`Day 01 > Part 01 > ${Day01.calculatePartOne(part01)}`);
 console.log(`Day 01 > Part 02 > ${Day01.calculatePartTwo(part01)}`);
 
-console.log(
-  `Day 02 > Part 01 + 02 > ${JSON.stringify(Day02.calculate(part02))}`
-);
+console.log(`Day 02 > Part 01 + 02 > ${Day02.calculate(part02)}`);
 
 console.log(`Day 03 > Part 01 > ${Day03.calculate(part03)}`);
 console.log(`Day 03 > Part 02 > ${Day03.calculateTwo(part03)}`);
 
-console.log(`Day 04 > Part 01 > ${Day04.calculate(part04)}`);
-console.log(`Day 04 > Part 02 > ${Day04.calculateTwo(part04)}`);
+console.log(`Day 04 > Part 01 + 02 > ${Day04.calculate(part04)}`);
 
 console.log("end");
