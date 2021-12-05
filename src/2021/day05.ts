@@ -23,7 +23,6 @@ const calculate = (input: string[], calculateDiagonals: boolean) => {
   let maxY = 0;
   for (let i = 0; i < input.length; i++) {
     const parsed = parseLine(input[i]);
-    const haveBeenHit: Set<string> = new Set();
 
     if (
       !calculateDiagonals &&
@@ -45,10 +44,7 @@ const calculate = (input: string[], calculateDiagonals: boolean) => {
   const positionHitCountA: number[][] = [];
 
   for (let i = 0; i <= maxX; i++) {
-    positionHitCountA.push([]);
-    for (let j = 0; j <= maxY; j++) {
-      positionHitCountA[i].push(0);
-    }
+    positionHitCountA.push(new Array(maxY + 1).fill(0));
   }
 
   for (let i = 0; i < lines.length; i++) {
