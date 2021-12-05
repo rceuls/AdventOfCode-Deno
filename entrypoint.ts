@@ -4,6 +4,7 @@ import * as Day01 from "./src/2021/day01.ts";
 import * as Day02 from "./src/2021/day02.ts";
 import * as Day03 from "./src/2021/day03.ts";
 import * as Day04 from "./src/2021/day04.ts";
+import * as Day05 from "./src/2021/day05.ts";
 
 import {
   getLines,
@@ -15,6 +16,7 @@ const part01 = getLinesAsNumbers("day01.input.txt", 2021);
 const part02 = getLines("day02.input.txt", 2021);
 const part03 = getLines("day03.input.txt", 2021);
 const part04 = getText("day04.input.txt", 2021);
+const part05 = getLines("day05.input.txt", 2021);
 
 const runAll = () => {
   console.log("start");
@@ -41,6 +43,10 @@ const runSingle = (targetDay: number) => {
       break;
     case 4:
       console.log(`Day 04 > Part 01 + 02 > ${Day04.calculateDay04(part04)}`);
+      break;
+    case 5:
+      console.log(`Day 05 > Part 01 > ${Day05.calculateDay05Part01(part05)}`);
+      console.log(`Day 05 > Part 02 > ${Day05.calculateDay05Part02(part05)}`);
       break;
     default:
       throw new Error("You forgot something");
