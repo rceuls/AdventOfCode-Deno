@@ -41,10 +41,10 @@ const calculate = (input: string[], calculateDiagonals: boolean) => {
     lines.push(parsed);
   }
 
-  const positionHitCountA: number[][] = [];
+  const positionHitCountA: number[][] = new Array(maxX + 1).fill([]);
 
   for (let i = 0; i <= maxX; i++) {
-    positionHitCountA.push(new Array(maxY + 1).fill(0));
+    positionHitCountA[i] = new Array(maxY + 1).fill(0);
   }
 
   for (let i = 0; i < lines.length; i++) {
