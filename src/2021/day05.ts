@@ -23,6 +23,7 @@ const calculate = (input: string[], calculateDiagonals: boolean) => {
   let maxY = 0;
   for (let i = 0; i < input.length; i++) {
     const parsed = parseLine(input[i]);
+    const haveBeenHit: Set<string> = new Set();
 
     if (
       !calculateDiagonals &&
@@ -41,12 +42,12 @@ const calculate = (input: string[], calculateDiagonals: boolean) => {
     lines.push(parsed);
   }
 
-  const positionHitCount: { [name: number]: { [name: number]: number } } = {};
+  const positionHitCountA: number[][] = [];
 
   for (let i = 0; i <= maxX; i++) {
-    positionHitCount[i] = {};
+    positionHitCountA.push([]);
     for (let j = 0; j <= maxY; j++) {
-      positionHitCount[i][j] = 0;
+      positionHitCountA[i].push(0);
     }
   }
 
@@ -60,11 +61,11 @@ const calculate = (input: string[], calculateDiagonals: boolean) => {
 
     if (item.fromX === item.toX) {
       for (let j = minY; j <= maxY; j++) {
-        positionHitCount[item.fromX][j] += 1;
+        positionHitCountA[item.fromX][j] += 1;
       }
     } else if (item.fromY === item.toY) {
       for (let j = minX; j <= maxX; j++) {
-        positionHitCount[j][item.fromY] += 1;
+        positionHitCountA[j][item.fromY] += 1;
       }
     } else if (calculateDiagonals) {
       const xGoesDown = item.fromX > item.toX;
@@ -74,23 +75,15 @@ const calculate = (input: string[], calculateDiagonals: boolean) => {
       let currY = item.fromY;
 
       for (;;) {
-        positionHitCount[currX][currY] += 1;
+        positionHitCountA[currX][currY] += 1;
 
         currX += xGoesDown ? -1 : 1;
         currY += yGoesDown ? -1 : 1;
 
-        if (!xGoesDown && currX > maxX) {
-          break;
-        }
-        if (xGoesDown && currX < minX) {
-          break;
-        }
-        if (!yGoesDown && currY > maxY) {
-          break;
-        }
-        if (yGoesDown && currY < minY) {
-          break;
-        }
+        if (!xGoesDown && currX > maxX) break;
+        if (xGoesDown && currX < minX) break;
+        if (!yGoesDown && currY > maxY) break;
+        if (yGoesDown && currY < minY) break;
       }
     }
   }
@@ -99,7 +92,7 @@ const calculate = (input: string[], calculateDiagonals: boolean) => {
 
   for (let i = 0; i <= maxX; i++) {
     for (let j = 0; j <= maxY; j++) {
-      if (positionHitCount[i][j] > 1) {
+      if (positionHitCountA[i][j] > 1) {
         multipleHits += 1;
       }
     }
