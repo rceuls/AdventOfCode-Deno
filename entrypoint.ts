@@ -45,8 +45,8 @@ const runSingle = (targetDay: number) => {
       console.log(`Day 04 > Part 01 + 02 > ${Day04.calculateDay04(part04)}`);
       break;
     case 5:
-      console.log(`Day 05 > Part 01 > ${Day05.calculateDay05Part01(part05)}`);
-      console.log(`Day 05 > Part 02 > ${Day05.calculateDay05Part02(part05)}`);
+      console.log(`Day 05 > Part 01 > ${Day05.calculateDay05(part05, false)}`);
+      console.log(`Day 05 > Part 02 > ${Day05.calculateDay05(part05, true)}`);
       break;
     default:
       throw new Error("You forgot something");

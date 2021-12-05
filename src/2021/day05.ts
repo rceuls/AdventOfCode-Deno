@@ -17,105 +17,64 @@ const parseLine = (input: string) => {
   };
 };
 
-const calculate = (input: string[]) => {
-  const lines = [];
-  for (let i = 0; i < input.length; i++) {
-    lines.push(parseLine(input[i]));
-  }
-
-  const relevantLines = [];
-  for (let i = 0; i < input.length; i++) {
-    const item = lines[i];
-    if (item.fromX === item.toX || item.fromY === item.toY) {
-      relevantLines.push(item);
-    }
-  }
-
-  const positionHitCount: { [name: string]: number } = {};
-  for (let i = 0; i < relevantLines.length; i++) {
-    const item = relevantLines[i];
-    if (item.fromX === item.toX) {
-      const max = item.fromY > item.toY ? item.fromY : item.toY;
-      const min = max === item.fromY ? item.toY : item.fromY;
-      for (let j = min; j <= max; j++) {
-        // deno-lint-ignore no-inferrable-types
-        const key: string = `${item.fromX}:${j}`;
-        if (!(key in positionHitCount)) {
-          positionHitCount[key] = 0;
-        }
-        positionHitCount[key] += 1;
-      }
-    } else if (item.fromY === item.toY) {
-      const max = item.fromX > item.toX ? item.fromX : item.toX;
-      const min = max === item.fromX ? item.toX : item.fromX;
-      for (let j = min; j <= max; j++) {
-        // deno-lint-ignore no-inferrable-types
-        const key: string = `${j}:${item.fromY}`;
-        if (!(key in positionHitCount)) {
-          positionHitCount[key] = 0;
-        }
-        positionHitCount[key] += 1;
-      }
-    }
-  }
-  const keys = Object.keys(positionHitCount);
-  let multipleHits = 0;
-  for (let i = 0; i < keys.length; i++) {
-    if (positionHitCount[keys[i]] >= 2) {
-      multipleHits += 1;
-    }
-  }
-  return multipleHits;
-};
-
-const calculateDiagonals = (input: string[]) => {
+const calculate = (input: string[], calculateDiagonals: boolean) => {
   const lines: Line[] = [];
+  let maxX = 0;
+  let maxY = 0;
   for (let i = 0; i < input.length; i++) {
-    lines.push(parseLine(input[i]));
+    const parsed = parseLine(input[i]);
+
+    if (
+      !calculateDiagonals &&
+      parsed.fromX !== parsed.toX &&
+      parsed.fromY !== parsed.toY
+    ) {
+      continue;
+    }
+
+    if (maxX < parsed.fromX) maxX = parsed.fromX;
+    if (maxX < parsed.toX) maxX = parsed.toX;
+
+    if (maxY < parsed.fromY) maxY = parsed.fromY;
+    if (maxY < parsed.toY) maxY = parsed.toY;
+
+    lines.push(parsed);
   }
-  const positionHitCount: { [name: string]: number } = {};
+
+  const positionHitCount: { [name: number]: { [name: number]: number } } = {};
+
+  for (let i = 0; i <= maxX; i++) {
+    positionHitCount[i] = {};
+    for (let j = 0; j <= maxY; j++) {
+      positionHitCount[i][j] = 0;
+    }
+  }
+
   for (let i = 0; i < lines.length; i++) {
     const item = lines[i];
+
+    const maxX = item.fromX > item.toX ? item.fromX : item.toX;
+    const maxY = item.fromY > item.toY ? item.fromY : item.toY;
+    const minX = item.fromX < item.toX ? item.fromX : item.toX;
+    const minY = item.fromY < item.toY ? item.fromY : item.toY;
+
     if (item.fromX === item.toX) {
-      const max = item.fromY > item.toY ? item.fromY : item.toY;
-      const min = max === item.fromY ? item.toY : item.fromY;
-      for (let j = min; j <= max; j++) {
-        // deno-lint-ignore no-inferrable-types
-        const key: string = `${item.fromX}:${j}`;
-        if (!(key in positionHitCount)) {
-          positionHitCount[key] = 0;
-        }
-        positionHitCount[key] += 1;
+      for (let j = minY; j <= maxY; j++) {
+        positionHitCount[item.fromX][j] += 1;
       }
     } else if (item.fromY === item.toY) {
-      const max = Math.max(item.fromX, item.toX);
-      const min = max === item.fromX ? item.toX : item.fromX;
-      for (let j = min; j <= max; j++) {
-        // deno-lint-ignore no-inferrable-types
-        const key: string = `${j}:${item.fromY}`;
-        if (!(key in positionHitCount)) {
-          positionHitCount[key] = 0;
-        }
-        positionHitCount[key] += 1;
+      for (let j = minX; j <= maxX; j++) {
+        positionHitCount[j][item.fromY] += 1;
       }
-    } else {
+    } else if (calculateDiagonals) {
       const xGoesDown = item.fromX > item.toX;
       const yGoesDown = item.fromY > item.toY;
-      const maxX = item.fromX > item.toX ? item.fromX : item.toX;
-      const maxY = item.fromY > item.toY ? item.fromY : item.toY;
-      const minX = item.fromX < item.toX ? item.fromX : item.toX;
-      const minY = item.fromY < item.toY ? item.fromY : item.toY;
 
       let currX = item.fromX;
       let currY = item.fromY;
 
       for (;;) {
-        // deno-lint-ignore no-inferrable-types
-        const key: string = `${currX}:${currY}`;
-        if (!(key in positionHitCount)) {
-          positionHitCount[key] = 0;
-        }
-        positionHitCount[key] += 1;
+        positionHitCount[currX][currY] += 1;
 
         currX += xGoesDown ? -1 : 1;
         currY += yGoesDown ? -1 : 1;
@@ -136,18 +95,17 @@ const calculateDiagonals = (input: string[]) => {
     }
   }
 
-  const keys = Object.keys(positionHitCount);
   let multipleHits = 0;
 
-  for (let i = 0; i < keys.length; i++) {
-    if (positionHitCount[keys[i]] >= 2) {
-      multipleHits += 1;
+  for (let i = 0; i <= maxX; i++) {
+    for (let j = 0; j <= maxY; j++) {
+      if (positionHitCount[i][j] > 1) {
+        multipleHits += 1;
+      }
     }
   }
+
   return multipleHits;
 };
 
-export {
-  calculate as calculateDay05Part01,
-  calculateDiagonals as calculateDay05Part02,
-};
+export { calculate as calculateDay05 };
