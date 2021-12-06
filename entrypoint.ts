@@ -18,16 +18,6 @@ const part03 = getLines("day03.input.txt", 2021);
 const part04 = getText("day04.input.txt", 2021);
 const part05 = getLines("day05.input.txt", 2021);
 
-const runAll = () => {
-  console.log("start");
-
-  for (let x = 1; x < 5; x++) {
-    runSingle(x);
-  }
-
-  console.log("end");
-};
-
 const runSingle = (targetDay: number) => {
   switch (targetDay) {
     case 1:
@@ -56,11 +46,6 @@ const runSingle = (targetDay: number) => {
 const args = parse(Deno.args);
 const targetDay = args._.length === 0 ? 0 : +args._[0];
 
-if (targetDay === 0) {
-  console.log("Running all days");
-  runAll();
-} else {
-  console.log(`Running only day ${targetDay}`);
-  runSingle(targetDay);
-}
+console.log(`Running only day ${targetDay}`);
+runSingle(targetDay);
 console.log("done");
