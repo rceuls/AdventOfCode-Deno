@@ -7,7 +7,7 @@ const input = getLines("day10.input.txt", 2021);
 const inputTest = getLines("day10.test.input.txt", 2021);
 
 Deno.test({
-  name: "2021 > day 10 > part 1 > example",
+  name: "2021 > day 10 > part 1 + 2 > example",
   fn() {
     const ret = calculateDay10(inputTest);
     assertEquals(ret.mismatch, 26397);
@@ -17,15 +17,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "2021 > day 10 > part 2 > example smol",
-  fn() {
-    assertEquals(calculateDay10(["<{([{{}}[<[[[<>{}]]]>[]]"]).adding, 294);
-  },
-  ...TEST_DEFAULTS,
-});
-
-Deno.test({
-  name: "2021 > day 10 > part 1 > actual",
+  name: "2021 > day 10 > part 1 + 2 > actual",
   fn() {
     const result = calculateDay10(input);
     assertEquals(result.mismatch, 296535);

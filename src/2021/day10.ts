@@ -1,9 +1,9 @@
-const starters = "([{<".split("");
-const stoppers = ")]}>".split("");
+const starters = "([{<".split("").map((x) => x.charCodeAt(0));
+const stoppers = ")]}>".split("").map((x) => x.charCodeAt(0));
 const misMatchPoints = [3, 57, 1197, 25137];
 const addingPoints = [1, 2, 3, 4];
 
-const cleanLine = (line: string[]) => {
+const cleanLine = (line: number[]) => {
   for (let i = 0; i < line.length - 1; ) {
     const fi = starters.indexOf(line[i]);
     const si = stoppers.indexOf(line[i + 1]);
@@ -22,7 +22,7 @@ const cleanLine = (line: string[]) => {
 const calculate01 = (input: string[]) => {
   const pts = [];
   const cleanLines = [];
-  const lines = input.map((x) => x.split(""));
+  const lines = input.map((x) => x.split("").map((x) => x.charCodeAt(0)));
   for (const origin of lines) {
     const line = cleanLine(origin);
     const firstCloser = line.findIndex((x) => stoppers.includes(x));
