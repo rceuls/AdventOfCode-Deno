@@ -21,42 +21,38 @@ const cleanLine = (line: string[]) => {
 
 const calculate01 = (input: string[]) => {
   const pts = [];
-  const corruptLines = [];
+  const cleanLines = [];
   const lines = input.map((x) => x.split(""));
-  let lineIndex = 0;
   for (const origin of lines) {
     const line = cleanLine(origin);
     const firstCloser = line.findIndex((x) => stoppers.includes(x));
     if (firstCloser > -1) {
       pts.push(misMatchPoints[stoppers.indexOf(line[firstCloser])]);
-      corruptLines.push(lineIndex);
+    } else {
+      cleanLines.push(line);
     }
-    lineIndex++;
   }
-  return { points: pts.reduce((n, p) => n + p, 0), corruptLines };
+  return { points: pts.reduce((n, p) => n + p, 0), cleanLines };
 };
 
-const calculate02 = (input: string[]) => {
-  const corruptedLines = calculate01(input).corruptLines;
-  const lines = input.map((x) => x.split(""));
+const calculate = (input: string[]) => {
+  const { cleanLines, points } = calculate01(input);
   const scores: number[] = [];
-  for (let i = 0; i < lines.length; i++) {
-    if (!corruptedLines.includes(i)) {
-      const line = cleanLine(lines[i]).reverse();
-      let val = 0;
-      for (let j = 0; j < line.length; j++) {
-        const ix = starters.indexOf(line[j]);
-        const toAdd = addingPoints[ix];
-        val *= 5;
-        val += toAdd;
-      }
-      scores.push(val);
+  for (let i = 0; i < cleanLines.length; i++) {
+    const line = cleanLines[i].reverse();
+    let val = 0;
+    for (let j = 0; j < line.length; j++) {
+      const ix = starters.indexOf(line[j]);
+      const toAdd = addingPoints[ix];
+      val *= 5;
+      val += toAdd;
     }
+    scores.push(val);
   }
-  return scores.sort((x, y) => x - y)[Math.floor(scores.length / 2)];
+  return {
+    adding: scores.sort((x, y) => x - y)[Math.floor(scores.length / 2)],
+    mismatch: points,
+  };
 };
 
-export {
-  calculate01 as calculateDay10Part01,
-  calculate02 as calculateDay10Part02,
-};
+export { calculate as calculateDay10 };
