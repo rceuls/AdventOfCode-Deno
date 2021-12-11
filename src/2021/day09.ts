@@ -131,4 +131,5 @@ const calculatePart02 = (input: string[]) => {
 export {
   calculate as calculateDay09Part01,
   calculatePart02 as calculateDay09Part02,
+  getSurroundCoordinates as getSurroundCoordinates,
 };
