@@ -39,10 +39,10 @@ const calculate = (input: string, iterations: number[]) => {
     }
 
     const haveFlashed = new Set<string>();
-    let doCheck = true;
+    let prevFlashCount = haveFlashed.size;
 
     do {
-      doCheck = false;
+      prevFlashCount = haveFlashed.size;
 
       for (let y = 0; y < 10; y++) {
         for (let x = 0; x < 10; x++) {
@@ -53,11 +53,10 @@ const calculate = (input: string, iterations: number[]) => {
               matrix[coord[1]][coord[0]] += 1;
             }
             haveFlashed.add(key);
-            doCheck = true;
           }
         }
       }
-    } while (doCheck);
+    } while (prevFlashCount !== haveFlashed.size);
 
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 10; x++) {
