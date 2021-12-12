@@ -7,7 +7,7 @@ const input = getText("day11.input.txt", 2021);
 const inputTest = getText("day11.test.input.txt", 2021);
 
 Deno.test({
-  name: "2021 > day 11 > part 1 > example",
+  name: "2021 > day 11 > part 1 + 2 > example",
   fn() {
     const result = calculateDay11(inputTest, [99]);
     assertEquals(result, {
