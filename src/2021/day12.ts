@@ -3,14 +3,14 @@ const isSmall = (input: string) => /[a-z]/.test(input);
 const calculate = (input: string[], maxDuplicateVisits: number) => {
   const lines = input.map((x) => x.split("-"));
   const connections: { [name: string]: string[] } = {};
-  for (const [a, b] of lines) {
-    if (b !== "start" && a !== "end") {
-      connections[a] = connections[a] ?? [];
-      connections[a].push(b);
+  for (const [from, to] of lines) {
+    if (to !== "start" && from !== "end") {
+      connections[from] = connections[from] ?? [];
+      connections[from].push(to);
     }
-    if (a !== "start" && b !== "end") {
-      connections[b] = connections[b] ?? [];
-      connections[b].push(a);
+    if (from !== "start" && to !== "end") {
+      connections[to] = connections[to] ?? [];
+      connections[to].push(from);
     }
   }
 
