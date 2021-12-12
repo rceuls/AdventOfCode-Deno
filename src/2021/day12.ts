@@ -15,6 +15,7 @@ const calculate = (input: string[], maxDuplicateVisits: number) => {
   }
 
   const validPaths = [];
+  let validPathCount = 0;
   let paths = [["start"]];
   while (paths.length) {
     const nextPaths = [];
@@ -23,7 +24,7 @@ const calculate = (input: string[], maxDuplicateVisits: number) => {
       for (const nextCave of connections[cave]) {
         const nextPath = [...path, nextCave];
         if (nextCave === "end") {
-          validPaths.push(nextPath);
+          validPathCount += 1;
           continue;
         }
         const smallCaves = nextPath.filter(isSmall);
@@ -35,7 +36,7 @@ const calculate = (input: string[], maxDuplicateVisits: number) => {
     }
     paths = nextPaths;
   }
-  return validPaths.length;
+  return validPathCount;
 };
 
 export { calculate as calculateDay12 };
