@@ -14,7 +14,6 @@ const calculate = (input: string[], maxDuplicateVisits: number) => {
     }
   }
 
-  const validPaths = [];
   let validPathCount = 0;
   let paths = [["start"]];
   while (paths.length) {
