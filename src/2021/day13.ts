@@ -1,44 +1,27 @@
-import { writeFile } from "../shared/file-util.ts";
-
 const INDEX_Y = 0;
 const INDEX_X = 1;
 
-const calculate = (
-  input: string,
-  onlyFirst: boolean,
-  printOutput?: boolean
-) => {
+const calculate = (input: string, printOutput = false) => {
   const [coordsRaw, foldsRaw] = input.split("\n\n");
   const coords = coordsRaw.split("\n").map((x) => x.split(",").map((x) => +x));
-  let folds = foldsRaw
+  const folds = foldsRaw
     .split("\n")
     .map((x) => x.replace("fold along ", "").split("="));
 
-  if (onlyFirst) {
-    folds = [folds[0]];
-  }
+  const uniqueCoords = [];
 
   for (const f of folds) {
     const [foldAxis, foldIndexS] = f;
     const foldIndex = +foldIndexS;
-
-    if (foldAxis === "y") {
-      for (let i = 0; i < coords.length; i++) {
-        coords[i][INDEX_X] =
-          foldIndex > coords[i][INDEX_X]
-            ? coords[i][INDEX_X]
-            : foldIndex - (coords[i][INDEX_X] - foldIndex);
-      }
+    const tgtIndex = foldAxis === "y" ? INDEX_X : INDEX_Y;
+    for (let i = 0; i < coords.length; i++) {
+      coords[i][tgtIndex] =
+        foldIndex > coords[i][tgtIndex]
+          ? coords[i][tgtIndex]
+          : foldIndex - (coords[i][tgtIndex] - foldIndex);
     }
-
-    if (foldAxis === "x") {
-      for (let i = 0; i < coords.length; i++) {
-        coords[i][INDEX_Y] =
-          foldIndex > coords[i][INDEX_Y]
-            ? coords[i][INDEX_Y]
-            : foldIndex - (coords[i][INDEX_Y] - foldIndex);
-      }
-    }
+    const ds = new Set(coords.map((xy) => `${xy[INDEX_Y]}:${xy[INDEX_X]}`));
+    uniqueCoords.push(ds.size);
   }
 
   const ds = new Set(coords.map((xy) => `${xy[INDEX_Y]}:${xy[INDEX_X]}`));
@@ -59,7 +42,7 @@ const calculate = (
     console.log(asString);
   }
 
-  return uniques.length;
+  return uniqueCoords;
 };
 
 export { calculate as calculateDay13 };

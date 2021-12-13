@@ -13,6 +13,3 @@ export const getLinesAsNumbers = (filePath: string, year: number) =>
 
 export const getText = (filePath: string, year: number) =>
   Deno.readTextFileSync(getFullPath(filePath, year));
-
-export const writeFile = (filePath: string, input: string) =>
-  Deno.writeTextFileSync(filePath, input);
