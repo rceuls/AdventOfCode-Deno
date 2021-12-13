@@ -18,7 +18,7 @@ Deno.test({
 Deno.test({
   name: "2021 > day 13 > part 1 + 2 > actual",
   fn() {
-    const result = calculateDay13(input);
+    const result = calculateDay13(input, true);
     assertEquals(
       [763, 642, 550, 465, 378, 307, 247, 204, 170, 140, 121, 103],
       result
