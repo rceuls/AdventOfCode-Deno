@@ -1,7 +1,7 @@
 const INDEX_Y = 0;
 const INDEX_X = 1;
 
-const calculate = (input: string, printOutput = false) => {
+const calculate = (input: string) => {
   const [coordsRaw, foldsRaw] = input.split("\n\n");
   const coords = coordsRaw.split("\n").map((x) => x.split(",").map((x) => +x));
   const folds = foldsRaw
@@ -27,16 +27,14 @@ const calculate = (input: string, printOutput = false) => {
   const ds = new Set(coords.map((xy) => `${xy[INDEX_Y]}:${xy[INDEX_X]}`));
   const uniques = Array.from(ds).map((x) => x.split(":").map((xy) => +xy));
 
-  if (printOutput) {
-    const maxX = Math.max(...uniques.map((x) => x[INDEX_X])) + 1;
-    const maxY = Math.max(...uniques.map((y) => y[INDEX_Y])) + 1;
+  const maxX = Math.max(...uniques.map((x) => x[INDEX_X])) + 1;
+  const maxY = Math.max(...uniques.map((y) => y[INDEX_Y])) + 1;
 
-    for (let i = 0; i < maxX; i++) {
-      for (let j = 0; j < maxY; j++) {
-        asString += ds.has(`${j}:${i}`) ? "█" : " ";
-      }
-      asString += "\n";
+  for (let i = 0; i < maxX; i++) {
+    for (let j = 0; j < maxY; j++) {
+      asString += ds.has(`${j}:${i}`) ? "█" : " ";
     }
+    asString += "\n";
   }
 
   return {
