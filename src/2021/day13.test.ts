@@ -9,8 +9,9 @@ const inputTest = getText("day13.test.input.txt", 2021);
 Deno.test({
   name: "2021 > day 13 > part 1 + 2 > example",
   fn() {
-    const result = calculateDay13(inputTest);
-    assertEquals(result, [17, 16]);
+    const { uniqueCoords, output } = calculateDay13(inputTest, true);
+    assertEquals(uniqueCoords, [17, 16]);
+    assertEquals(output, "\n█████\n█   █\n█   █\n█   █\n█████\n");
   },
   ...TEST_DEFAULTS,
 });
@@ -18,10 +19,19 @@ Deno.test({
 Deno.test({
   name: "2021 > day 13 > part 1 + 2 > actual",
   fn() {
-    const result = calculateDay13(input, true);
+    const { uniqueCoords, output } = calculateDay13(input, true);
     assertEquals(
-      [763, 642, 550, 465, 378, 307, 247, 204, 170, 140, 121, 103],
-      result
+      uniqueCoords,
+      [763, 642, 550, 465, 378, 307, 247, 204, 170, 140, 121, 103]
+    );
+    assertEquals(
+      output,
+      "\n███  █  █  ██  █    ███   ██  ███   ██ " +
+        "\n█  █ █  █ █  █ █    █  █ █  █ █  █ █  █" +
+        "\n█  █ ████ █  █ █    █  █ █    █  █ █  █" +
+        "\n███  █  █ ████ █    ███  █    ███  ████" +
+        "\n█ █  █  █ █  █ █    █ █  █  █ █ █  █  █" +
+        "\n█  █ █  █ █  █ ████ █  █  ██  █  █ █  █\n"
     );
   },
   ...TEST_DEFAULTS,

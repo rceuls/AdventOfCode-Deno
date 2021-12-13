@@ -7,7 +7,7 @@ const calculate = (input: string, printOutput = false) => {
   const folds = foldsRaw
     .split("\n")
     .map((x) => x.replace("fold along ", "").split("="));
-
+  let asString = "\n";
   const uniqueCoords = [];
 
   for (const f of folds) {
@@ -28,8 +28,6 @@ const calculate = (input: string, printOutput = false) => {
   const uniques = Array.from(ds).map((x) => x.split(":").map((xy) => +xy));
 
   if (printOutput) {
-    let asString = "\n";
-
     const maxX = Math.max(...uniques.map((x) => x[INDEX_X])) + 1;
     const maxY = Math.max(...uniques.map((y) => y[INDEX_Y])) + 1;
 
@@ -39,10 +37,12 @@ const calculate = (input: string, printOutput = false) => {
       }
       asString += "\n";
     }
-    console.log(asString);
   }
 
-  return uniqueCoords;
+  return {
+    output: asString,
+    uniqueCoords,
+  };
 };
 
 export { calculate as calculateDay13 };
