@@ -1,5 +1,7 @@
 scripts:
   test:
     cmd: deno test
+    gitHook: pre-commit
     allow: 
       - read
+  
