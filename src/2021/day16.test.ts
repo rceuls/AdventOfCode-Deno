@@ -20,15 +20,6 @@ Deno.test({
   ...TEST_DEFAULTS,
 });
 
-// Deno.test({
-//   name: "2021 > day 16 > part 2 > example",
-//   fn() {
-//     const data = calculateDay16(inputTest, 5);
-//     assertEquals(data, 315);
-//   },
-//   ...TEST_DEFAULTS,
-// });
-
 Deno.test({
   name: "2021 > day 16 > part 1 > actual",
   fn() {
