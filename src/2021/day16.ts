@@ -1,15 +1,50 @@
-type Packet = {
+type OpsPacket = {
+  type: "_ops";
   version: number;
   typeId: number;
-  packets?: Packet[];
-  literal?: number;
+  value: number;
+  packets: Packet[];
 };
 
-const isLiteral = (pk: Packet) => pk.typeId === 4;
+type LitPacket = {
+  type: "_lit";
+  version: number;
+  typeId: number;
+  value: number;
+};
+
+type Packet = OpsPacket | LitPacket;
+
+const HEADER_LENGTH = 6;
+
+const isLiteral = (pk: { typeId: number }) => pk.typeId === 4;
+
+const calculateOps = (input: { typeId: number; children: Packet[] }) => {
+  switch (input.typeId) {
+    case 0:
+      return input.children.reduce((p, n) => p + n.value, 0);
+    case 1:
+      return input.children.reduce((p, n) => p * n.value, 1);
+    case 2:
+      return input.children.sort((x, y) => x.value - y.value)[0].value;
+    case 3:
+      return input.children.sort((x, y) => y.value - x.value)[0].value;
+    case 5:
+      return input.children[0].value > input.children[1].value ? 1 : 0;
+    case 6:
+      return input.children[0].value < input.children[1].value ? 1 : 0;
+    case 7:
+      return input.children[0].value === input.children[1].value ? 1 : 0;
+    default:
+      console.log("shouldn't be here");
+      break;
+  }
+  return 1;
+};
 
 const getMetadata = (input: string[]) => ({
   version: Number.parseInt(input.slice(0, 3).join(""), 2),
-  typeId: Number.parseInt(input.slice(3, 6).join(""), 2),
+  typeId: Number.parseInt(input.slice(3, HEADER_LENGTH).join(""), 2),
 });
 
 const getLiteral = (input: string[]) => {
@@ -17,8 +52,10 @@ const getLiteral = (input: string[]) => {
   let i = 0;
   for (;;) {
     const slice = input.slice(i, i + 5);
+
     number += slice.slice(1).join("").padEnd(4, "0");
     i += 5;
+
     if (slice[0] === "0") {
       return { number: Number.parseInt(number, 2), literalLength: i };
     } else {
@@ -28,64 +65,64 @@ const getLiteral = (input: string[]) => {
 };
 
 const getSubPackets = (input: string[]) => {
-  const lengthType = input[0];
   const packets: Packet[] = [];
-  let currIndex = 1;
 
-  if (lengthType === "0") {
-    const subPacketLength = Number.parseInt(
-      input.slice(currIndex, currIndex + 15).join(""),
+  let trackedIndex = 0;
+  const lengthTypeId = input[0];
+  trackedIndex += 1;
+  if (lengthTypeId === "0") {
+    const totalLength = Number.parseInt(
+      input.slice(trackedIndex, trackedIndex + 15).join(""),
       2
     );
-    currIndex += 15;
-
-    // const subPacketArea = input.slice(currIndex, currIndex + subPacketLength);
-
-    while (currIndex <= subPacketLength) {
-      const nextSlice = input.slice(currIndex);
-      const md = getMetadata(nextSlice);
-      currIndex += 6;
-
-      const pkt: Packet = { ...md, packets: [] };
-      if (isLiteral(pkt)) {
-        const lit = getLiteral(nextSlice.slice(6));
-        pkt.literal = lit.number;
-        currIndex += lit.literalLength;
+    trackedIndex += 15;
+    while (trackedIndex < totalLength + 15 + 1) {
+      const md = getMetadata(input.slice(trackedIndex));
+      trackedIndex += HEADER_LENGTH;
+      if (isLiteral(md)) {
+        const lit = getLiteral(input.slice(trackedIndex));
+        packets.push({ ...md, type: "_lit", value: lit.number });
+        trackedIndex += lit.literalLength;
       } else {
-        const subPackets = getSubPackets(nextSlice.slice(6));
-        pkt.packets = subPackets.packets;
-        currIndex += subPackets.treatedLength;
+        const sub = getSubPackets(input.slice(trackedIndex));
+        packets.push({
+          ...md,
+          type: "_ops",
+          value: calculateOps({ typeId: md.typeId, children: sub.packets }),
+          packets: sub.packets,
+        });
+        trackedIndex += sub.treatedLength;
       }
-      packets.push(pkt);
     }
+    return { packets, treatedLength: totalLength + 15 + 1 };
   } else {
-    const subPacketCount = Number.parseInt(
-      input.slice(currIndex, currIndex + 11).join(""),
+    const totalItems = Number.parseInt(
+      input.slice(trackedIndex, trackedIndex + 11).join(""),
       2
     );
-    currIndex += 11;
-
-    while (packets.length <= subPacketCount) {
-      const nextSlice = input.slice(currIndex);
-      const md = getMetadata(nextSlice);
-      currIndex += 6;
-      const pkt: Packet = { ...md, packets: [] };
-      if (isLiteral(pkt)) {
-        const lit = getLiteral(nextSlice.slice(6));
-        pkt.literal = lit.number;
-        currIndex += lit.literalLength;
+    trackedIndex += 11;
+    let treatedItems = 0;
+    while (treatedItems < totalItems) {
+      const md = getMetadata(input.slice(trackedIndex));
+      trackedIndex += HEADER_LENGTH;
+      if (isLiteral(md)) {
+        const lit = getLiteral(input.slice(trackedIndex));
+        packets.push({ ...md, type: "_lit", value: lit.number });
+        trackedIndex += lit.literalLength;
       } else {
-        const subPackets = getSubPackets(nextSlice.slice(6));
-        pkt.packets = subPackets.packets;
-        currIndex += subPackets.treatedLength;
+        const sub = getSubPackets(input.slice(trackedIndex));
+        packets.push({
+          ...md,
+          type: "_ops",
+          value: calculateOps({ typeId: md.typeId, children: sub.packets }),
+          packets: sub.packets,
+        });
+        trackedIndex += sub.treatedLength;
       }
-      packets.push(pkt);
+      treatedItems += 1;
     }
+    return { packets, treatedLength: trackedIndex };
   }
-  return {
-    packets: packets.filter((x) => !isNaN(x.version)),
-    treatedLength: currIndex,
-  };
 };
 
 const calculate = (input: string) => {
@@ -100,26 +137,32 @@ const calculate = (input: string) => {
   if (isLiteral(md)) {
     packets.push({
       ...md,
-      literal: getLiteral(binString.slice(6)).number,
+      type: "_lit",
+      value: getLiteral(binString.slice(HEADER_LENGTH)).number,
     });
   } else {
+    const sb = getSubPackets(binString.slice(HEADER_LENGTH)).packets;
     packets.push({
       ...md,
-      packets: getSubPackets(binString.slice(6)).packets,
+      type: "_ops",
+      packets: sb,
+      value: calculateOps({ ...md, children: sb }),
     });
   }
 
-  // console.log(JSON.stringify(packets[0]));
   return packets[0];
 };
 
 const versionSumPkt: (packet: Packet) => number = (packet: Packet) => {
   let vsn = packet.version;
-  for (const p of packet.packets ?? []) {
-    vsn += versionSumPkt(p);
+  if (packet.type === "_ops") {
+    for (const p of packet.packets) {
+      vsn += versionSumPkt(p);
+    }
   }
   return vsn;
 };
 
 const versionSum = (input: string) => versionSumPkt(calculate(input));
+
 export { calculate as calculateDay16, versionSum };

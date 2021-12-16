@@ -1,4 +1,4 @@
-import { versionSum } from "./day16.ts";
+import { versionSum, calculateDay16 } from "./day16.ts";
 import { getText } from "../shared/file-util.ts";
 import { TEST_DEFAULTS } from "../shared/test-util.ts";
 import { assertEquals } from "https://deno.land/std@0.116.0/testing/asserts.ts";
@@ -6,15 +6,16 @@ import { assertEquals } from "https://deno.land/std@0.116.0/testing/asserts.ts";
 const input = getText("day16.input.txt", 2021);
 
 Deno.test({
-  name: "2021 > day 16 > part 1 > example",
+  name: "2021 > day 16 > part 2 > example",
   fn() {
-    assertEquals(versionSum("8A004A801A8002F478"), 16);
-    assertEquals(versionSum("620080001611562C8802118E34"), 12);
-    assertEquals(versionSum("C0015000016115A2E0802F182340"), 23);
-    assertEquals(versionSum("A0016C880162017C3686B18A3D4780"), 31);
-
-    //
-    // assertEquals(calculateDay16("8A004A801A8002F478").version, 40);
+    assertEquals(calculateDay16("C200B40A82").value, 3);
+    assertEquals(calculateDay16("04005AC33890").value, 54);
+    assertEquals(calculateDay16("880086C3E88112").value, 7);
+    assertEquals(calculateDay16("CE00C43D881120").value, 9);
+    assertEquals(calculateDay16("D8005AC2A8F0").value, 1);
+    assertEquals(calculateDay16("F600BC2D8F").value, 0);
+    assertEquals(calculateDay16("9C005AC2F8F0").value, 0);
+    assertEquals(calculateDay16("9C0141080250320F1802104A08").value, 1);
   },
   ...TEST_DEFAULTS,
 });
@@ -37,11 +38,11 @@ Deno.test({
   ...TEST_DEFAULTS,
 });
 
-// Deno.test({
-//   name: "2021 > day 16 > part 2 > actual",
-//   fn() {
-//     const data = calculateDay16(input, 5);
-//     assertEquals(data, 2874);
-//   },
-//   ...TEST_DEFAULTS,
-// });
+Deno.test({
+  name: "2021 > day 16 > part 2 > actual",
+  fn() {
+    const data = calculateDay16(input);
+    assertEquals(data.value, 167737115857);
+  },
+  ...TEST_DEFAULTS,
+});
