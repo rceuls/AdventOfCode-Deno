@@ -1,21 +1,26 @@
-type OpsPacket = {
+type OpsPacket = PacketHeader & {
   type: "_ops";
-  version: number;
-  typeId: number;
   value: number;
   packets: Packet[];
 };
 
-type LitPacket = {
+type LitPacket = PacketHeader & {
   type: "_lit";
+  value: number;
+};
+
+type PacketHeader = {
   version: number;
   typeId: number;
-  value: number;
 };
 
 type Packet = OpsPacket | LitPacket;
 
 const HEADER_LENGTH = 6;
+const FIELDS = {
+  "0": 15,
+  "1": 11,
+};
 
 const isLiteral = (pk: { typeId: number }) => pk.typeId === 4;
 
@@ -36,10 +41,8 @@ const calculateOps = (input: { typeId: number; children: Packet[] }) => {
     case 7:
       return input.children[0].value === input.children[1].value ? 1 : 0;
     default:
-      console.log("shouldn't be here");
-      break;
+      throw new Error("shouldn't be here");
   }
-  return 1;
 };
 
 const getMetadata = (input: string[]) => ({
@@ -57,69 +60,63 @@ const getLiteral = (input: string[]) => {
     i += 5;
 
     if (slice[0] === "0") {
-      return { number: Number.parseInt(number, 2), literalLength: i };
+      return { number: Number.parseInt(number, 2), treatedLength: i };
     } else {
       continue;
     }
   }
 };
 
+const treatPacket = (
+  input: string[],
+  trackedIndex: number,
+  packets: Packet[]
+) => {
+  const md = getMetadata(input.slice(trackedIndex));
+  trackedIndex += HEADER_LENGTH;
+  if (isLiteral(md)) {
+    const lit = getLiteral(input.slice(trackedIndex));
+    packets.push({ ...md, type: "_lit", value: lit.number });
+    trackedIndex += lit.treatedLength;
+  } else {
+    const sub = getSubPackets(input.slice(trackedIndex));
+    packets.push({
+      ...md,
+      type: "_ops",
+      value: calculateOps({ typeId: md.typeId, children: sub.packets }),
+      packets: sub.packets,
+    });
+    trackedIndex += sub.treatedLength;
+  }
+  return trackedIndex;
+};
+
 const getSubPackets = (input: string[]) => {
   const packets: Packet[] = [];
 
   let trackedIndex = 0;
-  const lengthTypeId = input[0];
+  const lengthTypeId = input[0] === "0" ? "0" : "1";
   trackedIndex += 1;
+  const subLength = FIELDS[lengthTypeId];
+
+  const totalLength = Number.parseInt(
+    input.slice(trackedIndex, trackedIndex + subLength).join(""),
+    2
+  );
+  trackedIndex += subLength;
+
   if (lengthTypeId === "0") {
-    const totalLength = Number.parseInt(
-      input.slice(trackedIndex, trackedIndex + 15).join(""),
-      2
-    );
-    trackedIndex += 15;
-    while (trackedIndex < totalLength + 15 + 1) {
-      const md = getMetadata(input.slice(trackedIndex));
-      trackedIndex += HEADER_LENGTH;
-      if (isLiteral(md)) {
-        const lit = getLiteral(input.slice(trackedIndex));
-        packets.push({ ...md, type: "_lit", value: lit.number });
-        trackedIndex += lit.literalLength;
-      } else {
-        const sub = getSubPackets(input.slice(trackedIndex));
-        packets.push({
-          ...md,
-          type: "_ops",
-          value: calculateOps({ typeId: md.typeId, children: sub.packets }),
-          packets: sub.packets,
-        });
-        trackedIndex += sub.treatedLength;
-      }
+    const treatedLength = totalLength + subLength + 1;
+    while (trackedIndex < treatedLength) {
+      trackedIndex = treatPacket(input, trackedIndex, packets);
     }
-    return { packets, treatedLength: totalLength + 15 + 1 };
+    return {
+      packets,
+      treatedLength,
+    };
   } else {
-    const totalItems = Number.parseInt(
-      input.slice(trackedIndex, trackedIndex + 11).join(""),
-      2
-    );
-    trackedIndex += 11;
-    let treatedItems = 0;
-    while (treatedItems < totalItems) {
-      const md = getMetadata(input.slice(trackedIndex));
-      trackedIndex += HEADER_LENGTH;
-      if (isLiteral(md)) {
-        const lit = getLiteral(input.slice(trackedIndex));
-        packets.push({ ...md, type: "_lit", value: lit.number });
-        trackedIndex += lit.literalLength;
-      } else {
-        const sub = getSubPackets(input.slice(trackedIndex));
-        packets.push({
-          ...md,
-          type: "_ops",
-          value: calculateOps({ typeId: md.typeId, children: sub.packets }),
-          packets: sub.packets,
-        });
-        trackedIndex += sub.treatedLength;
-      }
-      treatedItems += 1;
+    for (let treatedItems = 0; treatedItems < totalLength; treatedItems++) {
+      trackedIndex = treatPacket(input, trackedIndex, packets);
     }
     return { packets, treatedLength: trackedIndex };
   }
@@ -153,7 +150,7 @@ const calculate = (input: string) => {
   return packets[0];
 };
 
-const versionSumPkt: (packet: Packet) => number = (packet: Packet) => {
+const versionSumPkt = (packet: Packet) => {
   let vsn = packet.version;
   if (packet.type === "_ops") {
     for (const p of packet.packets) {
